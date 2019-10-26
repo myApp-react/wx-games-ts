@@ -1,0 +1,15 @@
+declare module '*.css';
+declare module '*.png';
+declare module '*.less';
+declare module '*.json';
+declare module '*.png';
+declare module '*.jpg';
+declare module '*.mp3';
+declare module '*.js';
+declare module 'react-responsive';
+declare module 'react-virtualized';
+declare module 'weixin-js-sdk';
+declare module 'shortid';
+declare module 'classNames';
+declare module 'postcss-px-to-viewport';
+declare module 'dva-model-extend';

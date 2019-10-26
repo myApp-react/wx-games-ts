@@ -1,0 +1,52 @@
+.loader {
+  background-color: #fff;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  text-align: center;
+
+  &.fullScreen {
+    position: fixed;
+  }
+
+  .warpper {
+    position: relative;
+    width: 200px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  .text {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    line-height: 1.5;
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #000;
+  }
+
+  &.hidden {
+    z-index: -1;
+    opacity: 1;
+    transition: opacity 1s ease 0.5s, z-index 0.1s ease 1.5s;
+  }
+}
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
