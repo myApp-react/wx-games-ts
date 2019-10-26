@@ -2,7 +2,6 @@ import { IConfig } from 'umi-types';
 import { resolve } from "path";
 import themeConfig from './src/themes/theme.js';
 import pxToViewPort from 'postcss-px-to-viewport';
-// import UglifyJsPlugin from 'uglifyjs-webpack-plugin'
 
 // ref: https://umijs.org/config/
 const config: IConfig =  {
@@ -89,29 +88,6 @@ const config: IConfig =  {
       },
     },
   },
-  // uglifyJSOptions: {
-  //   minimizer: [
-  //     new UglifyJsPlugin({
-  //       uglifyOptions: {
-  //         warnings: false,
-  //         parse: {},
-  //         compress: {},
-  //         mangle: true, // Note `mangle.properties` is `false` by default.
-  //         output: null,
-  //         toplevel: false,
-  //         nameCache: null,
-  //         ie8: false,
-  //         keep_fnames: false,
-  //       },
-  //     }),
-  //   ],
-  // }
-  // uglifyJSOptions(opts: any) {
-  //   console.error(opts)
-  //   // opts.uglifyOptions.compress.drop_console = true;
-  //   opts.uglifyOptions.output.comments = true;
-  //   return opts;
-  // },
 }
 
 export default config;
