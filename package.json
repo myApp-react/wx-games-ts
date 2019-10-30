@@ -60,7 +60,6 @@
     "scripts/**/*.js"
   ],
   "lint-staged": {
-    "**/*.less": "stylelint --syntax less",
     "*.{ts,tsx}": [
       "tslint --fix",
       "git add"

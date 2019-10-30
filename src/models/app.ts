@@ -2,8 +2,18 @@ import { Effect, Subscription} from 'dva';
 import { Reducer } from 'redux';
 import {Config} from "@/services/api";
 
+interface sdkType {
+  AbsoluteUri: any
+  AppId: string
+  NonceStr: string
+  Package: any
+  Signature: string
+  Ticket: string
+  Timestamp: string
+}
+
 export interface GlobalModelState {
-  apiConfig: any;
+  apiConfig: sdkType;
 }
 
 export interface GlobalModelType {
@@ -13,7 +23,7 @@ export interface GlobalModelType {
     getConfig: Effect;
   };
   reducers: {
-    setApiConfig: Reducer<any>;
+    setApiConfig: Reducer<GlobalModelState>;
   };
   subscriptions: {
     setup: Subscription,
