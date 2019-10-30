@@ -1,6 +1,5 @@
 import { IConfig } from 'umi-types';
 import { resolve } from "path";
-// import themeConfig from './src/themes/theme.js';
 import pxToViewPort from 'postcss-px-to-viewport';
 import ThemeConfig from './src/themes/theme'
 const { Theme } = ThemeConfig
@@ -73,7 +72,6 @@ const config: IConfig =  {
   extraPostCSSPlugins: [
     pxToViewPort({
       viewportWidth: 375,
-      // viewportHeight: 667,
       unitPrecision: 5,
       viewportUnit: 'vw',
       selectorBlackList: [],
