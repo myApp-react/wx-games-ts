@@ -28,27 +28,22 @@ interface appType {
   apiConfig: any
 }
 
-export interface EggsModelState {
-  eggs: eggsType
-  app: appType
-  dispatch: any,
-  loading: any,
-  location: any,
-}
-export interface CardModelState {
-  card: eggsType
+interface basicState {
   app: appType
   dispatch: any,
   loading: any,
   location: any,
 }
 
+export interface EggsModelState extends basicState {
+  eggs: eggsType
+}
+export interface CardModelState {
+  card: eggsType
+}
+
 export interface shakeModelState {
   shake: eggsType
-  app: appType
-  dispatch: any,
-  loading: any,
-  location: any,
 }
 
 /**大转盘props*/

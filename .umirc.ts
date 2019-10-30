@@ -2,7 +2,6 @@ import { IConfig } from 'umi-types';
 import { resolve } from "path";
 import pxToViewPort from 'postcss-px-to-viewport';
 import ThemeConfig from './src/themes/theme'
-const { Theme } = ThemeConfig
 
 // ref: https://umijs.org/config/
 const config: IConfig =  {
@@ -57,7 +56,7 @@ const config: IConfig =  {
       },
     }],
   ],
-  theme: Theme,
+  theme: ThemeConfig,
   alias: {
     assets: resolve(__dirname, './src/assets/'),
     components: resolve(__dirname, './src/components'),
