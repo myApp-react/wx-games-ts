@@ -1,7 +1,5 @@
-/**
- * title: 刮刮乐，刮好礼
- */
-import React, { PureComponent } from "react"
+import React, { PureComponent, } from "react"
+import { Helmet } from 'react-helmet'
 import { ScratchCard, GiftModal, GameItemCard, ShareModal, Page } from "@/components"
 import { WhiteSpace, Modal } from "antd-mobile"
 import { ConnectState } from "@/models/connect"
@@ -75,9 +73,10 @@ class ScratchcardPage extends PureComponent<CardModelState, PageState> {
     });
   }
 
-  onComplete = (status: boolean, img: string) => {
+  onComplete = (status: number, img: string) => {
+    const newStatus = status === 2;
     this.setState((pre) => ({
-      status,
+      status: newStatus,
       img,
       visible: !pre.visible
     }))
@@ -109,36 +108,7 @@ class ScratchcardPage extends PureComponent<CardModelState, PageState> {
       this.setState((pre) => ({
         shareVisible: true
       }), () => {
-
         _shareFriendAndCommunity('card', 'scratchcard', dispatch, ShareImage, activityId, OpenId, CustomerId, '2', '1');
-
-        // wx.onMenuShareAppMessage({
-        //   title: '分享好友', // 分享标题
-        //   desc: '抽奖活动分享', // 分享描述
-        //   link: `http://ydhtest.fetower.com/WestLuckyDraw/ExternalShareGuide?address=dist&routing=scratchcard&activityId=${activityId}&fromOpenid=${OpenId}&fromCustId=${CustomerId}&shareType=2`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        //   imgUrl: ShareImage, // 分享图标
-        //   success: function () {},
-        // })
-        //
-        //
-        // wx.onMenuShareTimeline({
-        //   title: '分享朋友圈', // 分享标题
-        //   link: `http://ydhtest.fetower.com/WestLuckyDraw/ExternalShareGuide?address=dist&routing=scratchcard&activityId=${activityId}&fromOpenid=${OpenId}&fromCustId=${CustomerId}&shareType=1`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        //   imgUrl: ShareImage, // 分享图标
-        //   success: function () {
-        //     dispatch({
-        //       type: 'scratchcard/shareCommunity',
-        //       payload: { activityId }
-        //     }).then((e: any) => {
-        //       if(e.flag){//朋友圈分享成功，更新可用次数
-        //         dispatch({
-        //           type: 'scratchcard/getAvailableCount',
-        //           payload: { activityId }
-        //         })
-        //       }
-        //     })
-        //   }
-        // })
       })
     }
   }
@@ -147,7 +117,7 @@ class ScratchcardPage extends PureComponent<CardModelState, PageState> {
   render() {
     const { card, loading, dispatch, location } = this.props;
     const { initConfig, allRecord, userRecord, UnUseCount, activityId } = card;
-    const { StartTimeStamp, EndTimeStamp  } = initConfig;
+    const { StartTimeStamp, EndTimeStamp, Name  } = initConfig;
     const { visible, status, img, shareStatus, shareVisible } = this.state;
     const canvasWidth = window.innerWidth;
     const canvasWidth1 = window.innerWidth / 100 * 19.2;
@@ -160,7 +130,7 @@ class ScratchcardPage extends PureComponent<CardModelState, PageState> {
       coverImage: coverImg,
       isShowCover: true,
       bgImage: innerImg,
-      finishPercent: 8,
+      finishPercent: 6,
       onComplete: this.onComplete,
       dispatch,
       location,
@@ -182,94 +152,100 @@ class ScratchcardPage extends PureComponent<CardModelState, PageState> {
     }
 
     return (
-      <Page loading={loading.effects['card/getInit']} holdText={'加载初始数据中, 请稍后...'}>
-        <div className={styles['games-warp']} id='scratchCard-warp'>
-          <div className={styles['bg-warp']}>
-            <img src={pointImg} className={styles.bgImg} alt=""/>
-            <p className={styles.Date}>{ DateRangeRender(StartTimeStamp, EndTimeStamp) }</p>
-          </div>
-          <div className={styles['swiper-area']}>
-            {
-              userRecord.map((e: any, i: number) => (
-                <ScratchCard
-                  key={i}
-                  {...innerProps}
-                  isShowCover={false}
-                  status={2}
-                  PrizeName={e.PrizeName}
-                  isEmpty={false}
-                />
-              ))
-            }
-            {
-              UnUseCount > 0 ? (new Array(UnUseCount)).fill(0).map((e, i) => (
-                <ScratchCard
-                  key={i}
-                  {...innerProps}
-                  isShowCover={true}
-                  status={0}
-                  PrizeName={''}
-                  isEmpty={true}
-                />
-              )) : <p style={{padding: '12px 0', textAlign: 'center', color: '#fff'}}>暂无更多抽奖</p>
-            }
-
-            <WhiteSpace />
-            <WhiteSpace />
-            <GameItemCard
-              title={"获取抽奖次数"}
-              holdText={"暂无活动"}
-              background={'rgba(255, 255, 255, 0.1)'}
-            >
-              <ul className={styles['getcount-warp']}>
-                {/*<li>*/}
-                {/*<p>1.注册会员可以直接获得1次抽奖机会</p>*/}
-                {/*<div className={styles['flex-btn']}>*/}
-                {/*<button className={styles.btn}>去注册</button>*/}
-                {/*</div>*/}
-                {/*</li>*/}
-                <li>
-                  <p>1.每日首次分享到朋友圈可获得1次抽奖机会</p>
-                  <div className={styles['flex-btn']}>
-                    <button className={styles.btn} disabled={shareStatus} onClick={this.shareHandle}>去分享</button>
-                  </div>
-                </li>
-              </ul>
-            </GameItemCard>
-            <GameItemCard
-              title={"中奖记录"}
-              holdText={"暂无中奖记录"}
-              background={'rgba(255, 255, 255, 0.1)'}
-            >
+      <>
+        <Helmet>
+          <title>{Name || ' 刮刮乐，刮好礼'}</title>
+        </Helmet>
+        <Page loading={loading.effects['card/getInit']} holdText={'加载初始数据中, 请稍后...'}>
+          <div className={styles['games-warp']} id='scratchCard-warp'>
+            <div className={styles['bg-warp']}>
+              <img src={pointImg} className={styles.bgImg} alt=""/>
+              <p className={styles.Date}>{ DateRangeRender(StartTimeStamp, EndTimeStamp) }</p>
+            </div>
+            <div className={styles['swiper-area']}>
               {
-                allRecord.length !== 0 ? (
-                  <ul className={styles['gift-list-flex']}>
-                    {
-                      allRecord.map((_: any, i: number) => (
-                        <li key={i}>
-                          <div className={styles['list-flex-name']} style={{WebkitBoxOrient: 'vertical'}}>{_.CustomerName}</div>
-                          <div>{moment(_.ShowCeateTime).format("YYYY-MM-DD HH:mm")}</div>
-                          <div className={styles['list-flex-text']}>{_.PrizeName}</div>
-                        </li>
-                      ))
-                    }
-                  </ul>
-                ) : null
+                userRecord.map((e: any, i: number) => (
+                  <ScratchCard
+                    key={i}
+                    {...innerProps}
+                    isShowCover={false}
+                    status={2}
+                    PrizeName={e.PrizeName}
+                    isEmpty={false}
+                  />
+                ))
               }
-            </GameItemCard>
-            <GameItemCard
-              title={"活动规则"}
-              holdText={"暂无活动规则"}
-              background={'rgba(255, 255, 255, 0.1)'}
-            >
-              <p>1，注册会员可以直接获得3次抽奖机会</p>
-              <p>2，注册会员可以直接获得3次抽奖机会</p>
-            </GameItemCard>
+              {
+                UnUseCount > 0 ? (new Array(UnUseCount)).fill(0).map((e, i) => (
+                  <ScratchCard
+                    key={i}
+                    {...innerProps}
+                    isShowCover={true}
+                    status={0}
+                    PrizeName={''}
+                    isEmpty={true}
+                  />
+                )) : <p style={{padding: '12px 0', textAlign: 'center', color: '#fff'}}>暂无更多抽奖</p>
+              }
+
+              <WhiteSpace />
+              <WhiteSpace />
+              <GameItemCard
+                title={"获取抽奖次数"}
+                holdText={"暂无活动"}
+                background={'rgba(255, 255, 255, 0.1)'}
+              >
+                <ul className={styles['getcount-warp']}>
+                  {/*<li>*/}
+                  {/*<p>1.注册会员可以直接获得1次抽奖机会</p>*/}
+                  {/*<div className={styles['flex-btn']}>*/}
+                  {/*<button className={styles.btn}>去注册</button>*/}
+                  {/*</div>*/}
+                  {/*</li>*/}
+                  <li>
+                    <p>1.每日首次分享到朋友圈可获得1次抽奖机会</p>
+                    <div className={styles['flex-btn']}>
+                      <button className={styles.btn} disabled={shareStatus} onClick={this.shareHandle}>去分享</button>
+                    </div>
+                  </li>
+                </ul>
+              </GameItemCard>
+              <GameItemCard
+                title={"中奖记录"}
+                holdText={"暂无中奖记录"}
+                background={'rgba(255, 255, 255, 0.1)'}
+              >
+                {
+                  allRecord.length !== 0 ? (
+                    <ul className={styles['gift-list-flex']}>
+                      {
+                        allRecord.map((_: any, i: number) => (
+                          <li key={i}>
+                            <div className={styles['list-flex-name']} style={{WebkitBoxOrient: 'vertical'}}>{_.CustomerName}</div>
+                            <div>{moment(_.ShowCeateTime).format("YYYY-MM-DD HH:mm")}</div>
+                            <div className={styles['list-flex-text']} style={{WebkitBoxOrient: 'vertical'}}>{_.PrizeName}</div>
+                          </li>
+                        ))
+                      }
+                    </ul>
+                  ) : null
+                }
+              </GameItemCard>
+              <GameItemCard
+                title={"活动规则"}
+                holdText={"暂无活动规则"}
+                background={'rgba(255, 255, 255, 0.1)'}
+              >
+                <p>1，注册会员可以直接获得3次抽奖机会</p>
+                <p>2，注册会员可以直接获得3次抽奖机会</p>
+              </GameItemCard>
+            </div>
+            <GiftModal {...modalProps}/>
+            <ShareModal {...shareProps}/>
           </div>
-          <GiftModal {...modalProps}/>
-          <ShareModal {...shareProps}/>
-        </div>
-      </Page>
+        </Page>
+      </>
+
 
     );
   }

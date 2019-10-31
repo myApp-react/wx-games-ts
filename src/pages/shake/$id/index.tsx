@@ -1,7 +1,5 @@
-/**
- * title: 开礼盒，抽大奖
- */
 import React, { PureComponent} from "react";
+import { Helmet } from 'react-helmet'
 import {connect} from "dva";
 import lottie from 'lottie-web';
 import { Carousel, GameItemCard, GiftModal, Page, ShareModal } from '@/components'
@@ -204,7 +202,7 @@ class ShakePage extends PureComponent<shakeModelState, ShakeState> {
     const { visible, shareStatus, status, img, shareVisible } = this.state;
     const { shake, loading } = this.props;
     const { initConfig, allRecord, userRecord, UnUseCount } = shake;
-    const { StartTimeStamp, EndTimeStamp  } = initConfig;
+    const { StartTimeStamp, EndTimeStamp, Name } = initConfig;
     const shareProps = {
       visible: shareVisible,
       onClose: this.shareOnClose
@@ -215,87 +213,93 @@ class ShakePage extends PureComponent<shakeModelState, ShakeState> {
     // console.warn("btnStatus", btnStatus)
 
     return (
-      <Page loading={loading.effects['shake/getInit']} holdText={'加载初始数据中, 请稍后...'}>
-        <div className={styles['shake-warp']}>
-          <div className={styles['top-tips']}>
-            <p className={styles.Date}>{ DateRangeRender(StartTimeStamp, EndTimeStamp) }</p>
-          </div>
-          <div className={styles['bg-main']}  ref={this.lottieRef} />
-          <div className={styles.main}>
-            <div className={styles['submit-btn']}>
-              {
-                btnStatus === 0 ? <button className={styles['btn-primary'] + ' ' + styles['btn-primary-wave']} onClick={this.getPrizehandle}>
-                  <img className={styles.innerImg} src={require("@/assets/shake-btn.png")} alt=""/>
-                </button> : btnStatus === 2 ? <button className={styles['btn-primary']} onClick={this.getPrizehandle}>
-                  <img className={styles.innerImg} src={require("@/assets/shake-btn-end.png")} alt=""/>
-                </button> : <button className={styles['btn-primary']} onClick={this.getPrizehandle}>
-                  <img className={styles.innerImg} src={require("@/assets/shake-btn-nostart.png")} alt=""/>
-                </button>
-              }
+      <>
+        <Helmet>
+          <title>{Name || '开礼盒，抽大奖'}</title>
+        </Helmet>
+        <Page loading={loading.effects['shake/getInit']} holdText={'加载初始数据中, 请稍后...'}>
+          <div className={styles['shake-warp']}>
+            <div className={styles['top-tips']}>
+              <p className={styles.Date}>{ DateRangeRender(StartTimeStamp, EndTimeStamp) }</p>
             </div>
-            <div className={styles['join-num']}><span>可参与{UnUseCount}次</span></div>
-            <Carousel
-              title={'中奖记录'}
-            >
-              {
-                allRecord.length !== 0 ? allRecord.map((_: any, i: number) => (
-                  <div key={_.RecordId} className={styles['carousel-item']} style={{WebkitBoxOrient: 'vertical'}}>{`${_.CustomerName}抽中${_.PrizeName}`}</div>
-                )) : null
-              }
-            </Carousel>
-            <GameItemCard
-              title={"获取抽奖次数"}
-              holdText={"暂无活动"}
-              background={'rgba(255, 255, 255, 0.1)'}
-            >
-              <ul className={styles['getcount-warp']}>
-                {/*<li>*/}
-                {/*<p>1.注册会员可以直接获得1次抽奖机会</p>*/}
-                {/*<div className={styles['flex-btn']}>*/}
-                {/*<button className={styles.btn}>去注册</button>*/}
-                {/*</div>*/}
-                {/*</li>*/}
-                <li>
-                  <p>1.每日首次分享到朋友圈可获得1次抽奖机会</p>
-                  <div className={styles['flex-btn']}>
-                    <button className={styles.btn} disabled={shareStatus} onClick={this.shareHandle}>去分享</button>
-                  </div>
-                </li>
-              </ul>
-            </GameItemCard>
-            <GameItemCard
-              title={"我的奖品"}
-              holdText={"暂无中奖记录"}
-              background={'rgba(255, 255, 255, 0.1)'}
-            >
-              {
-                userRecord.length !== 0 ? (
-                  <ul className={styles['gift-list-flex']}>
-                    {
-                      userRecord.map((_: any, i: number) => (
-                        <li key={_.RecordId}>
-                          <div>{moment(_.ShowCeateTime).format("YYYY-MM-DD HH:mm")}</div>
-                          <div className={styles['list-flex-text']}>{_.PrizeName}</div>
-                        </li>
-                      ))
-                    }
-                  </ul>
-                ) : null
-              }
-            </GameItemCard>
-            <GameItemCard
-              title={"活动规则"}
-              holdText={"暂无活动规则"}
-              background={'rgba(255, 255, 255, 0.1)'}
-            >
-              <p>1，注册会员可以直接获得3次抽奖机会</p>
-              <p>2，注册会员可以直接获得3次抽奖机会</p>
-            </GameItemCard>
-            <GiftModal visible={visible} status={status} img={img} onClose={this.onClose} />
-            <ShareModal {...shareProps}/>
+            <div className={styles['bg-main']}  ref={this.lottieRef} />
+            <div className={styles.main}>
+              <div className={styles['submit-btn']}>
+                {
+                  btnStatus === 0 ? <button className={styles['btn-primary'] + ' ' + styles['btn-primary-wave']} onClick={this.getPrizehandle}>
+                    <img className={styles.innerImg} src={require("@/assets/shake-btn.png")} alt=""/>
+                  </button> : btnStatus === 2 ? <button className={styles['btn-primary']} onClick={this.getPrizehandle}>
+                    <img className={styles.innerImg} src={require("@/assets/shake-btn-end.png")} alt=""/>
+                  </button> : <button className={styles['btn-primary']} onClick={this.getPrizehandle}>
+                    <img className={styles.innerImg} src={require("@/assets/shake-btn-nostart.png")} alt=""/>
+                  </button>
+                }
+              </div>
+              <div className={styles['join-num']}><span>可参与{UnUseCount}次</span></div>
+              <Carousel
+                title={'中奖记录'}
+              >
+                {
+                  allRecord.length !== 0 ? allRecord.map((_: any, i: number) => (
+                    <div key={_.RecordId} className={styles['carousel-item']} style={{WebkitBoxOrient: 'vertical'}}>{`${_.CustomerName}抽中${_.PrizeName}`}</div>
+                  )) : null
+                }
+              </Carousel>
+              <GameItemCard
+                title={"获取抽奖次数"}
+                holdText={"暂无活动"}
+                background={'rgba(255, 255, 255, 0.1)'}
+              >
+                <ul className={styles['getcount-warp']}>
+                  {/*<li>*/}
+                  {/*<p>1.注册会员可以直接获得1次抽奖机会</p>*/}
+                  {/*<div className={styles['flex-btn']}>*/}
+                  {/*<button className={styles.btn}>去注册</button>*/}
+                  {/*</div>*/}
+                  {/*</li>*/}
+                  <li>
+                    <p>1.每日首次分享到朋友圈可获得1次抽奖机会</p>
+                    <div className={styles['flex-btn']}>
+                      <button className={styles.btn} disabled={shareStatus} onClick={this.shareHandle}>去分享</button>
+                    </div>
+                  </li>
+                </ul>
+              </GameItemCard>
+              <GameItemCard
+                title={"我的奖品"}
+                holdText={"暂无中奖记录"}
+                background={'rgba(255, 255, 255, 0.1)'}
+              >
+                {
+                  userRecord.length !== 0 ? (
+                    <ul className={styles['gift-list-flex']}>
+                      {
+                        userRecord.map((_: any, i: number) => (
+                          <li key={_.RecordId}>
+                            <div>{moment(_.ShowCeateTime).format("YYYY-MM-DD HH:mm")}</div>
+                            <div className={styles['list-flex-text']}>{_.PrizeName}</div>
+                          </li>
+                        ))
+                      }
+                    </ul>
+                  ) : null
+                }
+              </GameItemCard>
+              <GameItemCard
+                title={"活动规则"}
+                holdText={"暂无活动规则"}
+                background={'rgba(255, 255, 255, 0.1)'}
+              >
+                <p>1，注册会员可以直接获得3次抽奖机会</p>
+                <p>2，注册会员可以直接获得3次抽奖机会</p>
+              </GameItemCard>
+              <GiftModal visible={visible} status={status} img={img} onClose={this.onClose} />
+              <ShareModal {...shareProps}/>
+            </div>
           </div>
-        </div>
-      </Page>
+        </Page>
+      </>
+
 
     );
   }

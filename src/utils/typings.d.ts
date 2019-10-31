@@ -13,3 +13,4 @@ declare module 'shortid';
 declare module 'classNames';
 declare module 'postcss-px-to-viewport';
 declare module 'dva-model-extend';
+declare module 'react-helmet';

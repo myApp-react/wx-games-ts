@@ -38,11 +38,11 @@ interface basicState {
 export interface EggsModelState extends basicState {
   eggs: eggsType
 }
-export interface CardModelState {
+export interface CardModelState extends basicState{
   card: eggsType
 }
 
-export interface shakeModelState {
+export interface shakeModelState extends basicState{
   shake: eggsType
 }
 
@@ -106,7 +106,7 @@ export interface CardProps {
   canvasWidth: number,
   coverColor?: string,
   coverImage?: string,
-  onComplete: (status: boolean, showImg: string) => void,
+  onComplete: (status: number, showImg: string) => void,
   dispatch: any,
   location: any,
   endDate: number,

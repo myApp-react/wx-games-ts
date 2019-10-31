@@ -16,6 +16,8 @@ interface CardSate {
   currentPrize: string,
   currentName: string,
   hasError: boolean
+  fetchStatus: boolean
+  swiperStatus: boolean
 }
 
 export default class ScratchCard extends PureComponent<CardProps, CardSate> {
@@ -31,7 +33,9 @@ export default class ScratchCard extends PureComponent<CardProps, CardSate> {
     currentStatus: 0,
     currentPrize: '',
     currentName: '',
-    hasError: false
+    hasError: false,
+    fetchStatus: false,
+    swiperStatus: false,
   }
 
   static defaultProps = {
@@ -92,10 +96,7 @@ export default class ScratchCard extends PureComponent<CardProps, CardSate> {
   getInfo = throttle(() => {
       const { dispatch, activityId } = this.props
       const _self = this;
-      // const match = pathMatchRegexp('/scratchcard/:id', location.pathname)
-      // if(!match) return;
-      // const activityId = match[1];
-
+      // this.isEnd = true;
       dispatch({
         type: "card/lotteryHandle",
         payload: {
@@ -103,26 +104,33 @@ export default class ScratchCard extends PureComponent<CardProps, CardSate> {
         }
       }).then((e: prizeStatus) => {
           const { Status, PrizeImage, PrizeName } = e;
-          if( Status === 100 ) {
-            dispatch({type: 'card/getAllRecord', payload: { activityId }});
-            _self.setState((pre) => ({
-              currentStatus: 2,
-              currentPrize: PrizeImage,
-              currentName: PrizeName,
-            }))
-            //填充文字
-          } else if( Status === 101 ){
-            _self.setState((pre) => ({
-              currentStatus: 1,
-              currentPrize: PrizeImage,
-              currentName: PrizeName
-            }))
-          }else {
-            const errorText = codeMessage[Status] || "抽奖失败";
-            alert("", errorText)
-            _self.setState((pre) => ({
-              hasError: true
-            }))
+          switch (Status){
+            case 100:
+              // this.isEnd = false;
+              _self.setState((pre) => ({
+                currentStatus: 2,
+                currentPrize: PrizeImage,
+                currentName: PrizeName,
+                fetchStatus: true
+              }), () => {
+                dispatch({type: 'card/getAllRecord', payload: { activityId }});
+              })
+              break;
+            case 101:
+              // this.isEnd = false;
+              _self.setState((pre) => ({
+                currentStatus: 1,
+                currentPrize: PrizeImage,
+                currentName: PrizeName,
+                fetchStatus: true
+              }))
+              break;
+            default:
+              const errorText = codeMessage[Status] || "抽奖失败";
+              alert("", errorText)
+              _self.setState((pre) => ({
+                hasError: true
+              }))
           }
       })
     },
@@ -146,9 +154,12 @@ export default class ScratchCard extends PureComponent<CardProps, CardSate> {
     context.restore();
   };
 
+
+
+
+
   getAreaHandle = (context: any) => {
-    const { finishPercent, onComplete, sampleStep } = this.props;
-    const { currentPrize, currentStatus } = this.state;
+    const { finishPercent, sampleStep } = this.props;
     const step = sampleStep;
     const imageData = context.getImageData(0, 0, context.canvas.width, context.canvas.height).data;
     const total = imageData.length / step;
@@ -163,10 +174,11 @@ export default class ScratchCard extends PureComponent<CardProps, CardSate> {
       //清空
       context.clearRect(0, 0, context.canvas.width, context.canvas.height);
       context.restore();
-      this.isEnd = true;
-      const status = currentStatus === 2;
       if(this.state.hasError) return;//如果报错，不能反馈抽奖结果信息
-      onComplete(status, currentPrize)
+      this.setState((pre) => ({
+        swiperStatus: true
+      }))
+      // onComplete(currentStatus, currentPrize)
     }
   }
 
@@ -184,6 +196,11 @@ export default class ScratchCard extends PureComponent<CardProps, CardSate> {
     //未到活动时间阻止
     if(moment().valueOf() < this.props.startDate) return;
     if(moment().valueOf() > this.props.endDate) return;
+
+    // 设置画的线的宽度
+    context.lineWidth = 35;
+    // 设置线交汇时，是圆角的
+    context.lineJoin = "round";
 
     ['touchstart', 'mousedown'].forEach((event) => {
       canvas.addEventListener(event, (e: any) => {
@@ -212,6 +229,13 @@ export default class ScratchCard extends PureComponent<CardProps, CardSate> {
         }
       })
     });
+  }
+
+  componentDidUpdate(props: any, state: any) {
+    console.warn("监控测试", this.state)
+    if(this.state.fetchStatus && this.state.swiperStatus ){
+      this.props.onComplete(this.state.currentStatus, this.state.currentPrize)
+    }
   }
 
 

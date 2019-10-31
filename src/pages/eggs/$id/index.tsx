@@ -2,6 +2,7 @@
  * title: 砸金蛋，赢红包
  */
 import React, { PureComponent } from "react";
+import { Helmet } from 'react-helmet'
 import egg from '@/assets/game/egg-normal.png';
 import openEgg from '@/assets/game/egg-prize.png';
 import emptyEgg from '@/assets/game/egg-empty.png';
@@ -220,9 +221,9 @@ class EGG extends PureComponent<EggsModelState, EggState> {
 
 
   render() {
-    const { eggs, loading } = this.props;
+    const { eggs, loading,  } = this.props;
     const { initConfig, allRecord, userRecord, UnUseCount } = eggs;
-    const { StartTimeStamp, EndTimeStamp } = initConfig;
+    const { StartTimeStamp, EndTimeStamp, Name } = initConfig;
     const { visible, status, shareVisible, img, shareStatus, awards } = this.state;
 
     const modalProps = {
@@ -238,89 +239,95 @@ class EGG extends PureComponent<EggsModelState, EggState> {
     }
 
     return (
-      <Page loading={loading.effects['eggs/getInit']} holdText={'加载初始数据中, 请稍后...'}>
-        <div className={styles.eggwarp}>
-          <div className={styles['bg-warp']}>
-            <img src={require("@/assets/game/eggs-bg.png")} className={styles.innerImg} alt=""/>
-            <p className={styles.Date}>{ DateRangeRender(StartTimeStamp, EndTimeStamp) }</p>
-          </div>
-          {/*<Eggs {...eggsProps}/>*/}
-          <div>
-            <ul className={styles['egg-item-cont']}>
+      <>
+        <Helmet>
+          <title>{Name || '砸金蛋，赢红包'}</title>
+        </Helmet>
+        <Page loading={loading.effects['eggs/getInit']} holdText={'加载初始数据中, 请稍后...'}>
+          <div className={styles.eggwarp}>
+            <div className={styles['bg-warp']}>
+              <img src={require("@/assets/game/eggs-bg.png")} className={styles.innerImg} alt=""/>
+              <p className={styles.Date}>{ DateRangeRender(StartTimeStamp, EndTimeStamp) }</p>
+            </div>
+            {/*<Eggs {...eggsProps}/>*/}
+            <div>
+              <ul className={styles['egg-item-cont']}>
+                {
+                  awards.map((_, i )=> (
+                    <li className={styles['egg-list']} key={_.id} data-id={_.id} onClick={e => this._pickerHandle(_, e)}>
+                      <div className={styles['eggs-warp']}>
+                        <img src={_.status === 0 ? egg : _.status === 1 ? openEgg : emptyEgg} className={styles.egg + ' ' + `${ _.status === 0 ? styles['egg-active'] : ''}`} alt=""/>
+                      </div>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+            <div className={styles['join-num']}><span>可参与{ UnUseCount }次</span></div>
+            <Carousel
+              title={'中奖记录'}
+            >
               {
-                awards.map((_, i )=> (
-                  <li className={styles['egg-list']} key={_.id} data-id={_.id} onClick={e => this._pickerHandle(_, e)}>
-                    <div className={styles['eggs-warp']}>
-                      <img src={_.status === 0 ? egg : _.status === 1 ? openEgg : emptyEgg} className={styles.egg + ' ' + `${ _.status === 0 ? styles['egg-active'] : ''}`} alt=""/>
-                    </div>
-                  </li>
-                ))
+                allRecord.length !== 0 ? allRecord.map((_: any, i: number) => (
+                  <div key={_.RecordId} className={styles['carousel-item']} style={{WebkitBoxOrient: 'vertical'}}>{`${_.CustomerName}抽中${_.PrizeName}`}</div>
+                )) : null
               }
-            </ul>
-          </div>
-          <div className={styles['join-num']}><span>可参与{ UnUseCount }次</span></div>
-          <Carousel
-            title={'中奖记录'}
-          >
-            {
-              allRecord.length !== 0 ? allRecord.map((_: any, i: number) => (
-                <div key={_.RecordId} className={styles['carousel-item']} style={{WebkitBoxOrient: 'vertical'}}>{`${_.CustomerName}抽中${_.PrizeName}`}</div>
-              )) : null
-            }
-          </Carousel>
-          <GameItemCard
-            title={"获取抽奖次数"}
-            holdText={"暂无活动"}
-            background={'rgba(255, 255, 255, 0.1)'}
-          >
-            <ul className={styles['getcount-warp']}>
-              {/*<li>*/}
-              {/*<p>1.注册会员可以直接获得1次抽奖机会</p>*/}
-              {/*<div className={styles['flex-btn']}>*/}
-              {/*<button className={styles.btn} onClick={() => this.setState({shareVisible: true})}>去注册</button>*/}
-              {/*</div>*/}
-              {/*</li>*/}
-              <li>
-                <p>1.每日首次分享到朋友圈可获得1次抽奖机会</p>
-                <div className={styles['flex-btn']}>
-                  <button className={styles.btn} disabled={shareStatus} onClick={this.shareHandle}>去分享</button>
-                </div>
-              </li>
-            </ul>
-          </GameItemCard>
-          <GameItemCard
-            title={"我的奖品"}
-            holdText={"暂无中奖记录"}
-            background={'rgba(255, 255, 255, 0.1)'}
-          >
-            {
-              userRecord.length !== 0 ? (
-                <ul className={styles['gift-list-flex']}>
-                  {
-                    userRecord.map((_: any, i: number) => (
-                      <li key={_.RecordId}>
-                        <div>{moment(_.ShowCeateTime).format("YYYY-MM-DD HH:mm")}</div>
-                        <div className={styles['list-flex-text']}>{_.PrizeName}</div>
-                      </li>
-                    ))
-                  }
-                </ul>
-              ) : null
-            }
-          </GameItemCard>
-          <GameItemCard
-            title={"活动规则"}
-            holdText={"暂无活动规则"}
-            background={'rgba(255, 255, 255, 0.1)'}
-          >
-            <p>1，注册会员可以直接获得3次抽奖机会</p>
-            <p>2，注册会员可以直接获得3次抽奖机会</p>
-          </GameItemCard>
-          <GiftModal {...modalProps}/>
-          <ShareModal {...shareProps}/>
+            </Carousel>
+            <GameItemCard
+              title={"获取抽奖次数"}
+              holdText={"暂无活动"}
+              background={'rgba(255, 255, 255, 0.1)'}
+            >
+              <ul className={styles['getcount-warp']}>
+                {/*<li>*/}
+                {/*<p>1.注册会员可以直接获得1次抽奖机会</p>*/}
+                {/*<div className={styles['flex-btn']}>*/}
+                {/*<button className={styles.btn} onClick={() => this.setState({shareVisible: true})}>去注册</button>*/}
+                {/*</div>*/}
+                {/*</li>*/}
+                <li>
+                  <p>1.每日首次分享到朋友圈可获得1次抽奖机会</p>
+                  <div className={styles['flex-btn']}>
+                    <button className={styles.btn} disabled={shareStatus} onClick={this.shareHandle}>去分享</button>
+                  </div>
+                </li>
+              </ul>
+            </GameItemCard>
+            <GameItemCard
+              title={"我的奖品"}
+              holdText={"暂无中奖记录"}
+              background={'rgba(255, 255, 255, 0.1)'}
+            >
+              {
+                userRecord.length !== 0 ? (
+                  <ul className={styles['gift-list-flex']}>
+                    {
+                      userRecord.map((_: any, i: number) => (
+                        <li key={_.RecordId}>
+                          <div>{moment(_.ShowCeateTime).format("YYYY-MM-DD HH:mm")}</div>
+                          <div className={styles['list-flex-text']}>{_.PrizeName}</div>
+                        </li>
+                      ))
+                    }
+                  </ul>
+                ) : null
+              }
+            </GameItemCard>
+            <GameItemCard
+              title={"活动规则"}
+              holdText={"暂无活动规则"}
+              background={'rgba(255, 255, 255, 0.1)'}
+            >
+              <p>1，注册会员可以直接获得3次抽奖机会</p>
+              <p>2，注册会员可以直接获得3次抽奖机会</p>
+            </GameItemCard>
+            <GiftModal {...modalProps}/>
+            <ShareModal {...shareProps}/>
 
-        </div>
-      </Page>
+          </div>
+        </Page>
+      </>
+
 
     );
   }

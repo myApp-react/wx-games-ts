@@ -3,6 +3,7 @@ import { resolve } from "path";
 import pxToViewPort from 'postcss-px-to-viewport';
 import ThemeConfig from './src/themes/theme'
 
+
 // ref: https://umijs.org/config/
 const config: IConfig =  {
   publicPath: '/dist/',
@@ -52,6 +53,7 @@ const config: IConfig =  {
           /service\.(t|j)sx?$/,
           /components\//,
           /turntable\//,
+          /infinite\//,
         ],
       },
     }],
