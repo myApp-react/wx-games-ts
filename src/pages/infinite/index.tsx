@@ -34,6 +34,8 @@ const dataSource = new ListView.DataSource({
   rowHasChanged: (row1: any, row2: any) => row1 !== row2,
 });
 
+console.warn(window)
+
 interface ListScrollState {
   dataSource: any,
   isLoading: boolean,

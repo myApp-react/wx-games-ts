@@ -53,7 +53,6 @@ const config: IConfig =  {
           /service\.(t|j)sx?$/,
           /components\//,
           /turntable\//,
-          /infinite\//,
         ],
       },
     }],
