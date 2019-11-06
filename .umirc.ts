@@ -65,9 +65,6 @@ const config: IConfig =  {
     utils: resolve(__dirname, './src/utils/'),
     themes: resolve(__dirname, './src/themes'),
   },
-  // lessLoaderOptions: {
-  //   javascriptEnabled: true,
-  // },
   disableRedirectHoist: true,
   extraPostCSSPlugins: [
     pxToViewPort({
