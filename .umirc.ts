@@ -68,7 +68,7 @@ const config: IConfig =  {
   disableRedirectHoist: true,
   extraPostCSSPlugins: [
     pxToViewPort({
-      viewportWidth: 375,
+      viewportWidth: 750,
       unitPrecision: 5,
       viewportUnit: 'vw',
       selectorBlackList: [],

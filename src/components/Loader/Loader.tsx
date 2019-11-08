@@ -31,7 +31,7 @@ export default memo(({spinning = true, loadText = '正在加载中...', fullScre
       })}
     >
       <div className={styles.warpper}>
-        <div ref={lottieRef}></div>
+        <div ref={lottieRef} />
         <div className={styles.text}>{loadText}</div>
       </div>
     </div>

@@ -94,3 +94,27 @@ export const eggData = [
     status: 0
   },
 ];
+
+export const hammerPoX = {
+  0: '73vw',
+  1: '39vw',
+  2: '5.33333vw',
+  3: '73vw',
+  4: '39vw',
+  5: '5.33333vw',
+  6: '73vw',
+  7: '39vw',
+  8: '5.33333vw'
+}
+
+export const hammerPoY = {
+  0: '-2.66667vw',
+  1: '-2.66667vw',
+  2: '-2.66667vw',
+  3: '28vw',
+  4: '28vw',
+  5: '28vw',
+  6: '60vw',
+  7: '60vw',
+  8: '60vw'
+}

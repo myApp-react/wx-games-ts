@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { ListView } from 'antd-mobile';
 import styles from './index.less'
+
 const data = [
   {
     img: 'https://zos.alipayobjects.com/rmsportal/dKbkpPXKfvZzWCM.png',
@@ -41,6 +42,7 @@ interface ListScrollState {
   isLoading: boolean,
   hasMore: boolean,
 }
+
 
 export default class ListScroll extends PureComponent<{}, ListScrollState> {
   lv: React.RefObject<any> = React.createRef();

@@ -11,15 +11,16 @@ export interface Loading {
     global?: boolean;
     app?: boolean;
     eggs?: boolean;
+    card?: boolean;
+    shake?: boolean;
   };
 }
 
 export interface ConnectState {
-  loading: Loading;
   app: GlobalModelState;
   eggs: EggsModelState;
   card: CardModelState;
   shake: shakeModelState;
-  // location: any
+  loading: Loading;
 }
 

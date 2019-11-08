@@ -35,7 +35,6 @@ export default memo((props: ModalProps) => {
       e.preventDefault();
     }
   }
-  console.error("===========弹出信息=============", props)
   const { visible, onClose, status, img } = props;
 
   return (

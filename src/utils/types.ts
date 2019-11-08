@@ -1,4 +1,5 @@
 //抽奖返回参数
+
 export interface prizeStatus {
   Status: number,
   PrizeImage: string,
@@ -31,8 +32,8 @@ interface appType {
 interface basicState {
   app: appType
   dispatch: any,
-  loading: any,
   location: any,
+  loading: any;
 }
 
 export interface EggsModelState extends basicState {
@@ -41,7 +42,6 @@ export interface EggsModelState extends basicState {
 export interface CardModelState extends basicState{
   card: eggsType
 }
-
 export interface shakeModelState extends basicState{
   shake: eggsType
 }

@@ -1,6 +1,3 @@
-/**
- * title: 砸金蛋，赢红包
- */
 import React, { PureComponent } from "react";
 import { Helmet } from 'react-helmet'
 import egg from '@/assets/game/egg-normal.png';
@@ -16,7 +13,9 @@ import { connect } from "dva";
 import wx from "weixin-js-sdk";
 import moment from "moment";
 import produce from "immer"
-import { codeMessage, eggData } from "@/utils/constant";
+import { codeMessage, eggData, hammerPoX, hammerPoY } from "@/utils/constant";
+import classNames from "classNames";
+
 
 const alert = Modal.alert;
 
@@ -27,12 +26,16 @@ interface EggState {
   status: boolean;
   shareVisible: boolean;
   img: string;
+  hammerX: string;
+  hammerY: string;
+  shakStatus: boolean;
+  hitStatus: boolean;
+  shakeIndex: number
 }
 
-
-@connect(({ app, eggs, loading }: ConnectState) => ({app, eggs, loading}))
+@connect(({ app, eggs, loading }: ConnectState ) => ({app, eggs, loading}))
 class EGG extends PureComponent<EggsModelState, EggState> {
-  timer = null;
+  timer: any = null;
   state: EggState = {
     awards: eggData,
     visible: false,
@@ -40,12 +43,18 @@ class EGG extends PureComponent<EggsModelState, EggState> {
     img: "",
     shareVisible: false,
     shareStatus: true,
+    hammerX: '0',
+    hammerY: '-2.66667vw',
+    shakStatus: true,
+    hitStatus: false,
+    shakeIndex: 0
   }
 
   componentDidMount() {
     const { apiConfig } = this.props.app;
     const { AppId, NonceStr, Timestamp, Signature, } = apiConfig;
     const _self = this;
+    this.changeShakeIndex();
     wx.config({
       debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
       appId: AppId, // 必填，公众号的唯一标识
@@ -64,7 +73,7 @@ class EGG extends PureComponent<EggsModelState, EggState> {
       _self.setState((pre) => ({shareStatus: false}))
       const { eggs, dispatch } = _self.props;
       const { initConfig, activityId } = eggs;
-      const { OpenId, CustomerId, ShareImage  } = initConfig;
+      const { OpenId, CustomerId, ShareImage } = initConfig;
       if(activityId && OpenId && CustomerId && ShareImage) {
         _shareFriendAndCommunity('eggs','eggs', dispatch, ShareImage, activityId, OpenId, CustomerId, '2', '1');
       }
@@ -73,6 +82,21 @@ class EGG extends PureComponent<EggsModelState, EggState> {
     wx.error(() => {
       _self.setState((pre) => ({shareStatus: true}))
     });
+  }
+
+  changeShakeIndex = () => {
+    setInterval(() => {
+      this.setState((pre) => ({
+        shakeIndex: pre.shakeIndex + 1
+      }), () => {
+        if(this.state.shakeIndex === 9){
+          this.setState({
+            shakeIndex: 0
+          })
+        }
+        console.log(1212, this.state.shakeIndex)
+      })
+    }, 1000)
   }
 
 
@@ -121,37 +145,7 @@ class EGG extends PureComponent<EggsModelState, EggState> {
       this.setState((pre) => ({
         shareVisible: true
       }), () => {
-
         _shareFriendAndCommunity('eggs', 'eggs', dispatch, ShareImage, activityId, OpenId, CustomerId, '2', '1');
-
-        // wx.onMenuShareAppMessage({
-        //   title: '分享好友', // 分享标题
-        //   desc: '抽奖活动分享', // 分享描述
-        //   link: `http://ydhtest.fetower.com/WestLuckyDraw/ExternalShareGuide?address=dist&routing=eggs&activityId=${activityId}&fromOpenid=${OpenId}&fromCustId=${CustomerId}&shareType=2`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        //   imgUrl: ShareImage, // 分享图标
-        //   success: function () {},
-        // })
-        //
-        // wx.onMenuShareTimeline({
-        //   title: '分享朋友圈', // 分享标题
-        //   link: `http://ydhtest.fetower.com/WestLuckyDraw/ExternalShareGuide?address=dist&routing=eggs&activityId=${activityId}&fromOpenid=${OpenId}&fromCustId=${CustomerId}&shareType=1`, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        //   imgUrl: ShareImage, // 分享图标
-        //   success: function () {
-        //     dispatch({
-        //       type: 'eggs/shareCommunity',
-        //       payload: { activityId }
-        //     }).then((e: any) => {
-        //       if(e.flag){//朋友圈分享成功，更新可用次数
-        //         dispatch({
-        //           type: 'eggs/getAvailableCount',
-        //           payload: { activityId }
-        //         })
-        //       }
-        //     })
-        //   }
-        // })
-
-
       })
     }
   }
@@ -170,24 +164,45 @@ class EGG extends PureComponent<EggsModelState, EggState> {
     if(record.status !== 0) return;
 
     if(UnUseCount > 0){
-
-      dispatch({
-        type: "eggs/lotteryHandle",
-        payload: { activityId }
-      }).then((e: prizeStatus) => {
-        const { Status, PrizeImage } = e;
-        if( Status === 100 ) {
-          this._changeEggsStatus(record.id, 1, PrizeImage);
-          //更新
-          dispatch({type: 'eggs/getAllRecord', payload: { activityId }});
-          dispatch({type: 'eggs/getUserRecord', payload: { activityId }});
-        } else if( Status === 101 ) {
-          this._changeEggsStatus(record.id, 2, PrizeImage);
-        }else {
-          const errorText = codeMessage[Status] || "抽奖失败";
-          alert(errorText, '')
-        }
+      const Index = e.target.getAttribute("data-index");
+      this.setState((pre) => ({
+        hammerX: hammerPoX[Index],
+        hammerY: hammerPoY[Index]
+      }), () => {
+        if(this.timer) clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+          this.setState({
+            shakStatus: false,
+            hitStatus: true,
+          })
+          dispatch({
+            type: "eggs/lotteryHandle",
+            payload: { activityId }
+          }).then((e: prizeStatus) => {
+            const { Status, PrizeImage } = e;
+            this.setState({
+              shakStatus: true,
+              hitStatus: false,
+              hammerX: '0',
+              hammerY: '-2.66667vw'
+            })
+            if( Status === 100 ) {
+              this._changeEggsStatus(record.id, 1, PrizeImage);
+              //更新
+              dispatch({type: 'eggs/getAllRecord', payload: { activityId }});
+              dispatch({type: 'eggs/getUserRecord', payload: { activityId }});
+            } else if( Status === 101 ) {
+              this._changeEggsStatus(record.id, 2, PrizeImage);
+            }else {
+              const errorText = codeMessage[Status] || "抽奖失败";
+              alert(errorText, '')
+            }
+          })
+        }, 1000)
       })
+
+
+
     }else {
       alert('抽奖次数已用完', '');
     }
@@ -221,10 +236,11 @@ class EGG extends PureComponent<EggsModelState, EggState> {
 
 
   render() {
+    console.log("this", this.props)
     const { eggs, loading,  } = this.props;
     const { initConfig, allRecord, userRecord, UnUseCount } = eggs;
     const { StartTimeStamp, EndTimeStamp, Name } = initConfig;
-    const { visible, status, shareVisible, img, shareStatus, awards } = this.state;
+    const { visible, status, shareVisible, img, shareStatus, awards, hammerX, hammerY, hitStatus, shakStatus, shakeIndex } = this.state;
 
     const modalProps = {
       status,
@@ -238,6 +254,8 @@ class EGG extends PureComponent<EggsModelState, EggState> {
       onClose: this.shareOnClose
     }
 
+    console.log("", loading.effects['eggs/getInit'])
+
     return (
       <>
         <Helmet>
@@ -250,13 +268,43 @@ class EGG extends PureComponent<EggsModelState, EggState> {
               <p className={styles.Date}>{ DateRangeRender(StartTimeStamp, EndTimeStamp) }</p>
             </div>
             {/*<Eggs {...eggsProps}/>*/}
-            <div>
+            <div className={styles['eggs-container']}>
+              <div className={classNames(styles.hammer, {
+                [styles.shak]: shakStatus,
+                [styles.hit]: hitStatus,
+              })} style={{top: hammerY, right: hammerX, transform: `translate3d(0, 0, 0)`}}/>
               <ul className={styles['egg-item-cont']}>
+                {/*{*/}
+                  {/*awards.map((_, i )=> (*/}
+                    {/*<li className={styles['egg-list']} key={_.id} data-index={i} onClick={e => this._pickerHandle(_, e)}>*/}
+                      {/*<div className={styles['eggs-warp']}>*/}
+                        {/*<img */}
+                          {/*src={_.status === 0 ? egg : _.status === 1 ? openEgg : emptyEgg}*/}
+                          {/*className={styles.egg + ' ' + `${ _.status === 0 ? styles['egg-active'] : ''}`} */}
+                          {/*alt=""*/}
+                        {/*/>*/}
+                        {/**/}
+                      {/*</div>*/}
+                    {/*</li>*/}
+                  {/*))*/}
+                {/*}*/}
                 {
+                  //className={styles.egg + ' ' + `${ _.status === 0 ? styles['egg-active'] : ''}`}
                   awards.map((_, i )=> (
-                    <li className={styles['egg-list']} key={_.id} data-id={_.id} onClick={e => this._pickerHandle(_, e)}>
+                    <li className={styles['egg-list']} key={_.id} data-index={i} onClick={e => this._pickerHandle(_, e)}>
                       <div className={styles['eggs-warp']}>
-                        <img src={_.status === 0 ? egg : _.status === 1 ? openEgg : emptyEgg} className={styles.egg + ' ' + `${ _.status === 0 ? styles['egg-active'] : ''}`} alt=""/>
+                        <div className={classNames(styles.eggs)}>
+                          <img
+                            src={_.status === 0 ? egg : _.status === 1 ? openEgg : emptyEgg}
+                            className={classNames(styles.egg, {
+                              [styles['egg-shake']]: i === shakeIndex,
+                            })}
+                            alt="金蛋图片"
+                          />
+                        </div>
+                        <div className={styles.base}>
+                          <img className={styles.egg} src={require('@/assets/game/base.png')} alt=""/>
+                        </div>
                       </div>
                     </li>
                   ))
