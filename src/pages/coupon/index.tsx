@@ -1,9 +1,12 @@
+
 import React, { PureComponent } from 'react'
+import Link from 'umi/link';
 import styles from './index.less'
 import { Page } from '@/components'
 import { Icon } from 'antd-mobile'
 import classNames from "classNames";
-
+import giftCash from '@/assets/coupon/gift-cash.png'
+import giftCashAfter from '@/assets/coupon/gift-cash-after.png'
 
 interface CouponState {
   activeid: string
@@ -42,7 +45,6 @@ export default class CouponList extends PureComponent<{}, CouponState> {
   }
 
   onChange = (e: any) => {
-    console.log(e)
     const activeid = e.target.getAttribute("data-id")
     this.setState((pre) => ({
       activeid
@@ -52,16 +54,12 @@ export default class CouponList extends PureComponent<{}, CouponState> {
 
   render() {
     const { activeid } = this.state;
-    const beforeD = [1,2,3,4,5];
-    const beforeHeight = activeid === '1' ? `${1 * 26.13333 + 16}vw` : '16vw'
-    const usedHeight = activeid === '2' ? `${1 * 26.13333 + 16}vw` : '16vw'
-    const afterHeight = activeid === '3' ? `${2 * 26.13333 + 16}vw` : '16vw'
 
     return (
       <Page loading={false} holdText={'正在加载优惠券'}>
           <div className={styles.coupon}>
             <ul className={styles["title-warp"]}>
-              <li style={{height: beforeHeight}}>
+              <li>
                 <div
                   className={styles["title-main"]}
                   data-id="1"
@@ -77,18 +75,40 @@ export default class CouponList extends PureComponent<{}, CouponState> {
                   [styles["coupon-hide"]]: activeid === '1'
                 })}>
                   <div className={styles['coupon-list-cont']}>
-                    <div className={styles['list-item']}>
-                      <div className={styles["list-item-img"]}><img src="" alt=""/></div>
-                      <div className={styles["list-item-label"]}>
-                        <p className={styles["item-label-title"]}>现金券满100减20</p>
-                        <p className={styles["item-label-des"]}>￥20</p>
+                    <Link to="coupon/123123123">
+                      <div className={styles['list-item']}>
+                        <div className={styles["list-item-img"]}><img src={giftCash} alt=""/></div>
+                        <div className={styles["list-item-label"]}>
+                          <p className={styles["item-label-title"]}>现金券满100减20</p>
+                          <p className={styles["item-label-des"]}>￥20</p>
+                        </div>
+                        <div className={styles["list-item-tips"]}>即将过期</div>
                       </div>
-                      <div className={styles["list-item-tips"]}>即将过期</div>
-                    </div>
+                    </Link>
+                    <Link to="coupon/1231aasd23123">
+                      <div className={styles['list-item']}>
+                        <div className={styles["list-item-img"]}><img src={giftCash} alt=""/></div>
+                        <div className={styles["list-item-label"]}>
+                          <p className={styles["item-label-title"]}>现金券满100减20</p>
+                          <p className={styles["item-label-des"]}>￥20</p>
+                        </div>
+                        <div className={styles["list-item-tips"]}>即将过期</div>
+                      </div>
+                    </Link>
+                    <Link to="coupon/12312312323">
+                      <div className={styles['list-item']}>
+                        <div className={styles["list-item-img"]}><img src={giftCash} alt=""/></div>
+                        <div className={styles["list-item-label"]}>
+                          <p className={styles["item-label-title"]}>现金券满100减20</p>
+                          <p className={styles["item-label-des"]}>￥20</p>
+                        </div>
+                        <div className={styles["list-item-tips"]}>即将过期</div>
+                      </div>
+                    </Link>
                   </div>
                 </div>
               </li>
-              <li style={{height: usedHeight}}>
+              <li>
                 <div className={styles["title-main"]} data-id="2" onClick={this.onChange}>
                   <img className={styles["left-img"]} src={require("@/assets/coupon/coupon-used.png")} alt=""/>
                   <h3 className={styles["title-text"]}>已使用（12）</h3>
@@ -97,21 +117,62 @@ export default class CouponList extends PureComponent<{}, CouponState> {
                   })} type="right" size='md' />
                 </div>
                 <div className={classNames(styles["coupon-list"], {
-                  [styles["coupon-hide"]]: activeid === '2'
+                  [styles["coupon-hide"]]: activeid === '2',
+                  [styles.expired]: true
                 })}>
                   <div className={styles['coupon-list-cont']}>
                     <div className={styles['list-item']}>
-                      <div className={styles["list-item-img"]}><img src="" alt=""/></div>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
                       <div className={styles["list-item-label"]}>
                         <p className={styles["item-label-title"]}>现金券满100减20</p>
                         <p className={styles["item-label-des"]}>￥20</p>
                       </div>
-                      <div className={styles["list-item-tips"]}>即将过期</div>
+                      <div className={styles["list-item-tips"]}>已使用</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已使用</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已使用</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已使用</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已使用</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已使用</div>
                     </div>
                   </div>
                 </div>
               </li>
-              <li style={{height: afterHeight}}>
+              <li>
                 <div
                   className={styles["title-main"]}
                   data-id="3"
@@ -124,24 +185,89 @@ export default class CouponList extends PureComponent<{}, CouponState> {
                   })} type="right" size='md' />
                 </div>
                 <div className={classNames(styles["coupon-list"], {
-                  [styles["coupon-hide"]]: activeid === '3'
+                  [styles["coupon-hide"]]: activeid === '3',
+                  [styles.expired]: true
                 })}>
                   <div className={styles['coupon-list-cont']}>
                     <div className={styles['list-item']}>
-                      <div className={styles["list-item-img"]}><img src="" alt=""/></div>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
                       <div className={styles["list-item-label"]}>
                         <p className={styles["item-label-title"]}>现金券满100减20</p>
                         <p className={styles["item-label-des"]}>￥20</p>
                       </div>
-                      <div className={styles["list-item-tips"]}>即将过期</div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
                     </div>
                     <div className={styles['list-item']}>
-                      <div className={styles["list-item-img"]}><img src="" alt=""/></div>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
                       <div className={styles["list-item-label"]}>
                         <p className={styles["item-label-title"]}>现金券满100减20</p>
                         <p className={styles["item-label-des"]}>￥20</p>
                       </div>
-                      <div className={styles["list-item-tips"]}>即将过期</div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
+                    </div>
+                    <div className={styles['list-item']}>
+                      <div className={styles["list-item-img"]}><img src={giftCashAfter} alt=""/></div>
+                      <div className={styles["list-item-label"]}>
+                        <p className={styles["item-label-title"]}>现金券满100减20</p>
+                        <p className={styles["item-label-des"]}>￥20</p>
+                      </div>
+                      <div className={styles["list-item-tips"]}>已过期</div>
                     </div>
                   </div>
                 </div>

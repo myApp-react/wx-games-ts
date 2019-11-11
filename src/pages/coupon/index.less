@@ -1,13 +1,18 @@
 .coupon{
-
+  height: 100%;
+  overflow: hidden;
+  //background-color: #E9434F;
+  //padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+  //padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
 }
 .title-warp{
+  //padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+  //padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
   li{
-    max-height: calc(100% - 340px);
+    //padding-bottom: constant(safe-area-inset-bottom); /* 兼容 iOS < 11.2 */
+    //padding-bottom: env(safe-area-inset-bottom); /* 兼容 iOS >= 11.2 */
     position: relative;
     border-bottom: 1px solid #ddd;
-    overflow: hidden;
-    transition: all .3s linear;
   }
 }
 .title-col-list{
@@ -52,9 +57,27 @@
 }
 
 .coupon-list{
-  height: 0;
-  transition: all 0.3s linear;
-  overflow: hidden;
+  max-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  transition: max-height 0.3s ease-in-out;
+}
+
+.coupon-hide{
+  max-height: calc(100vh - 360px);
+  z-index: 9;
+}
+.expired{
+  .item-label-title{
+    color: #999;
+  }
+  .item-label-des{
+    color: #999;
+  }
+  .list-item-tips{
+    color: #999;
+  }
 }
 .coupon-list-cont{
   width: 100%;
@@ -65,16 +88,7 @@
   -webkit-overflow-scrolling: touch;
   overflow-scrolling: touch;
 }
-.coupon-hide{
-  position: absolute;
-  top: 100px;
-  left: 0;
-  width: 100%;
-  height: auto;
-  //max-height: calc(100% - 240px);
-  transition: all 0.3s linear;
-  z-index: 9;
-}
+
 
 .list-item{
   margin-top: 20px;
@@ -89,9 +103,15 @@
   border-radius:8px;
 }
 .list-item-img{
-
+  width: 80px;
+  height: 80px;
+  img{
+    display: block;
+    width: 100%;
+  }
 }
 .list-item-label{
+  padding-left: 50px;
   flex: 1;
 }
 .item-label-title{
@@ -105,4 +125,23 @@
 .list-item-tips{
   font-size: 36px;
   color: #339CFF;
+}
+
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .coupon-hide{
+    max-height: calc(100vh - 450px);
+  }
+}
+// xr
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .coupon-hide{
+    max-height: calc(100vh - 450px);
+  }
+}
+
+// xs max
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .coupon-hide{
+    max-height: calc(100vh - 450px);
+  }
 }

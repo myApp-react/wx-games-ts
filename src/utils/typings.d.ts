@@ -14,3 +14,5 @@ declare module 'classNames';
 declare module 'postcss-px-to-viewport';
 declare module 'dva-model-extend';
 declare module 'react-helmet';
+declare module 'ac-barcode';
+declare module 'qrcode.react';

@@ -6,8 +6,8 @@ import ThemeConfig from './src/themes/theme'
 
 // ref: https://umijs.org/config/
 const config: IConfig =  {
-  publicPath: '/dist/',
-  outputPath: './dist',
+  publicPath: '/dist1/',
+  outputPath: './dist1',
   targets: {
     android: 5,
     chrome: 58,

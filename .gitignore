@@ -9,6 +9,7 @@
 
 # production
 /dist
+/dist1
 /build
 /.idea
 
